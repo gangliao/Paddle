@@ -221,6 +221,26 @@ typedef struct {
 #define DIVUP(x, y) (((x) + (y)-1) / (y))
 #endif
 
+/**
+ * sigmoid threshold maximum
+ */
+#define SIGMOID_THRESHOLD_MIN -40.0
+
+/**
+ * sigmoid threshold minimum
+ */
+#define SIGMOID_THRESHOLD_MAX 13.0
+
+/**
+ * activation template class
+ */
+template <class T>
+class Active {
+public:
+  using forward = T (*)(T);
+  using backward = T (*)(T, T);
+};
+
 #ifdef __NVCC__
 
 #include "cuda_runtime.h"

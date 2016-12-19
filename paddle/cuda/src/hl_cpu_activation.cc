@@ -12,8 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+#include "hl_cpu_activation.h"
 #include <math.h>
-#include "hl_functions.h"
+#include "hl_base.h"
 
 namespace hppl {
 

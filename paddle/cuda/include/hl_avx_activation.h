@@ -12,21 +12,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#ifndef HL_AVX_FUNCTIONS_H_
-#define HL_AVX_FUNCTIONS_H_
+#pragma once
 
 #include <immintrin.h>
+#include "hl_base.h"
 
 namespace hppl {
-__m256 relu(const __m256 a);
+
+// clang-format off
+__m256 relu   (const __m256 a);
 __m256 sigmoid(const __m256 a);
-__m256 tanh(const __m256 a);
-__m256 linear(const __m256 a);
+__m256 tanh   (const __m256 a);
+__m256 linear (const __m256 a);
 
-__m256 relu(const __m256 a, const __m256 b);
+__m256 relu   (const __m256 a, const __m256 b);
 __m256 sigmoid(const __m256 a, const __m256 b);
-__m256 tanh(const __m256 a, const __m256 b);
-__m256 linear(const __m256 a, const __m256 b);
-}  // namespace hppl
+__m256 tanh   (const __m256 a, const __m256 b);
+__m256 linear (const __m256 a, const __m256 b);
 
-#endif  // HL_AVX_FUNCTIONS_H_
+namespace avx {
+static Active<__m256>::forward  forward [] = { sigmoid, relu, tanh, linear };
+static Active<__m256>::backward backward[] = { sigmoid, relu, tanh, linear };
+}
+// clang-format on
+
+}  // namespace hppl

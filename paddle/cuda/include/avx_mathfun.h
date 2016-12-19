@@ -29,8 +29,11 @@
   (this is the zlib license)
 */
 
+#pragma once
+
 #include <immintrin.h>
 
+// clang-format off
 /* yes I know, the top of this file is quite ugly */
 #define ALIGN32_BEG
 #define ALIGN32_END __attribute__((aligned(32)))
@@ -720,3 +723,4 @@ void sincos256_ps(v8sf x, v8sf *s, v8sf *c) {
   *s = _mm256_xor_ps(xmm1, sign_bit_sin);
   *c = _mm256_xor_ps(xmm2, sign_bit_cos);
 }
+// clang-format on

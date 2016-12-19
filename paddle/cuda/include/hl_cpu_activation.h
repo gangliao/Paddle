@@ -12,46 +12,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#ifndef HL_FUNCTIONS_H_
-#define HL_FUNCTIONS_H_
+#pragma once
 
 #include "hl_base.h"
 
-/**
- * sigmoid threshold maximum
- */
-#define SIGMOID_THRESHOLD_MIN -40.0
-
-/**
- * sigmoid threshold minimum
- */
-#define SIGMOID_THRESHOLD_MAX 13.0
-
-#ifndef __NVCC__
 namespace hppl {
-/*
- * forward activation
- */
-real relu(const real a);
+// clang-format off
+
+/// forward activation
+real relu   (const real a);
 real sigmoid(const real a);
-real tanh(const real a);
-real linear(const real a);
+real tanh   (const real a);
+real linear (const real a);
 
-/*
- * backward activation
- */
-real relu(const real a, const real b);
+/// backward activation
+real relu   (const real a, const real b);
 real sigmoid(const real a, const real b);
-real tanh(const real a, const real b);
-real linear(const real a, const real b);
+real tanh   (const real a, const real b);
+real linear (const real a, const real b);
+
+namespace cpu {
+static Active<real>::forward  forward [] = { sigmoid, relu, tanh, linear };
+static Active<real>::backward backward[] = { sigmoid, relu, tanh, linear };
+}
+
+// clang-format on
 }  // namespace hppl
-
-#ifdef __AVX__
-#include "hl_avx_functions.h"
-#endif
-
-#else
-#include "hl_gpu_functions.cuh"
-#endif
-
-#endif  // HL_FUNCTIONS_H_
