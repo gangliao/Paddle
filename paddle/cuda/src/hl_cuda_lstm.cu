@@ -16,7 +16,7 @@ limitations under the License. */
 #include "hl_base.h"
 #include "hl_cuda_cublas.h"
 #include "hl_device_functions.cuh"
-#include "hl_activation_functions.h"
+#include "hl_gpu_activation.h"
 #include "paddle/utils/Logging.h"
 
 typedef hppl::Active<real>::forward  t_forward;

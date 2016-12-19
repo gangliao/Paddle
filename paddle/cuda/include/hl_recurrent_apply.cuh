@@ -12,12 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-
-#ifndef HL_RECURRENT_APPLY_CUH_
-#define HL_RECURRENT_APPLY_CUH_
+#pragma once
 
 #include "hl_base.h"
-#include "hl_activation_functions.h"
 #include "hl_lstm_ops.cuh"
 #include "hl_gpu_lstm.cuh"
 #include "hl_cpu_lstm.cuh"
@@ -188,5 +185,3 @@ extern void hl_gpu_gru_backward(OpStateGrad opStateGrad,
                                 int batchSize,
                                 hl_activation_mode_t active_node,
                                 hl_activation_mode_t active_gate);
-
-#endif /* HL_RECURRENT_APPLY_CUH_ */

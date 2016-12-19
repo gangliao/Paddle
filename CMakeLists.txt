@@ -83,12 +83,6 @@ else()
         message(FATAL_ERROR "Paddle need cudnn to compile")
     endif()
 
-    if(WITH_AVX)
-        set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-Xcompiler ${AVX_FLAG}")
-    else(WITH_AVX)
-        set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-Xcompiler ${SSE3_FLAG}")
-    endif(WITH_AVX)
-
     # Include cuda and cudnn
     include_directories(${CUDNN_INCLUDE_DIR})
     include_directories(${CUDA_TOOLKIT_INCLUDE})
@@ -112,14 +106,6 @@ endif(NOT WITH_TIMER)
 if(NOT WITH_PROFILER)
     add_definitions(-DPADDLE_DISABLE_PROFILER)
 endif(NOT WITH_PROFILER)
-
-if(WITH_AVX)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${AVX_FLAG}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${AVX_FLAG}")
-else(WITH_AVX)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SSE3_FLAG}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE3_FLAG}")
-endif(WITH_AVX)
 
 if(WITH_PYTHON)
     include_directories(${PYTHON_INCLUDE_DIR})
