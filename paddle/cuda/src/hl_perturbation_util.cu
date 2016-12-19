@@ -13,14 +13,33 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 
+#include "hl_perturbation_util.cuh"
 #include <cmath>
 #include <stdlib.h>
+#include <chrono>
+#include <cstdint>
 #include "hl_cuda.h"
 #include "hl_time.h"
 #include "hl_base.h"
-#include "hl_perturbation_util.cuh"
 
 #define _USE_MATH_DEFINES
+
+using std::chrono::high_resolution_clock;
+
+/**
+ * @brief   High resolution timer.
+ *
+ * @return  int64_t the representation value of the object as a
+ *                  count of periods, which are not necessarily
+ *                  seconds.
+ *
+ * @note    It is used to generate random perturbation parameters.
+ */
+int64_t getCurrentTimeStick() {
+  high_resolution_clock::time_point tp = high_resolution_clock::now();
+  high_resolution_clock::duration dtn = tp.time_since_epoch();
+  return dtn.count();
+}
 
 /*
  * Get the original coordinate for a pixel in a transformed image.
