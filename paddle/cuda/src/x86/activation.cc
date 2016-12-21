@@ -12,11 +12,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#include "hl_cpu_activation.h"
+#include "x86/activation.h"
 #include <math.h>
 #include "hl_base.h"
 
-namespace hppl {
+namespace paddle {
 
 real relu(const real a) { return a > 0.0f ? a : 0.0f; }
 
@@ -42,4 +42,5 @@ real sigmoid(const real a, const real b) { return a * b * (1 - b); }
 real tanh(const real a, const real b) { return a * (1.0f - b * b); }
 
 real linear(const real a, const real b) { return a; }
-}  // namespace hppl
+
+}  // namespace paddle

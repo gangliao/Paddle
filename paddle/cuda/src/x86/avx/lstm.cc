@@ -12,8 +12,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#include "hl_avx_activation.h"
+#include "x86/avx/lstm.h"
+#include <immintrin.h>
 #include "hl_lstm_ops.cuh"
+#include "x86/avx/activation.h"
+
+namespace paddle {
 
 template <class Op>
 void hl_avx_lstm_forward_one_sequence(Op op,
@@ -63,9 +67,9 @@ void hl_avx_lstm_forward_one_sequence(Op op,
        rCheckI,
        rCheckF,
        rCheckO,
-       hppl::avx::forward[active_node],
-       hppl::avx::forward[active_gate],
-       hppl::avx::forward[active_state]);
+       avx::forward[active_node],
+       avx::forward[active_gate],
+       avx::forward[active_state]);
 
     valueIn[i] = rValueIn;
     valueIg[i] = rValueIg;
@@ -151,9 +155,9 @@ void hl_avx_lstm_backward_one_sequence(Op op,
        rCheckIGrad,
        rCheckFGrad,
        rCheckOGrad,
-       hppl::avx::backward[active_node],
-       hppl::avx::backward[active_gate],
-       hppl::avx::backward[active_state]);
+       avx::backward[active_node],
+       avx::backward[active_gate],
+       avx::backward[active_state]);
 
     gradIn[i] = rGradIn;
     gradIg[i] = rGradIg;
@@ -169,3 +173,5 @@ void hl_avx_lstm_backward_one_sequence(Op op,
     if (grad.checkOgGrad) ((__m256 *)grad.checkOgGrad)[i] += rCheckOGrad;
   }
 }
+
+}  // namespace paddle

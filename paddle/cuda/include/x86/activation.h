@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "hl_base.h"
 
-namespace hppl {
+namespace paddle {
 // clang-format off
 
 /// forward activation

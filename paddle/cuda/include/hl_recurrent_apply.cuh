@@ -14,13 +14,12 @@ limitations under the License. */
 
 #pragma once
 
-#include "hl_base.h"
-#include "hl_lstm_ops.cuh"
 #include "hl_gpu_lstm.cuh"
-#include "hl_cpu_lstm.cuh"
-#include "hl_gru_ops.cuh"
 #include "hl_gpu_gru.cuh"
-#include "hl_cpu_gru.cuh"
+#include "hl_lstm_ops.cuh"
+#include "hl_gru_ops.cuh"
+
+namespace paddle {
 
 /**
  * @brief   Cpu lstm forward one sequence.
@@ -185,3 +184,6 @@ extern void hl_gpu_gru_backward(OpStateGrad opStateGrad,
                                 int batchSize,
                                 hl_activation_mode_t active_node,
                                 hl_activation_mode_t active_gate);
+
+}  // namespace paddle
+

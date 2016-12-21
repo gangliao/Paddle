@@ -15,9 +15,9 @@ limitations under the License. */
 #include <immintrin.h>
 
 #include "avx_mathfun.h"
-#include "hl_avx_activation.h"
+#include "x86/avx/activation.h"
 
-namespace hppl {
+namespace paddle {
 
 inline __m256 exp(__m256 a) { return exp256_ps(a); }
 
@@ -75,4 +75,4 @@ __m256 tanh(const __m256 a, const __m256 b) {
 
 __m256 linear(const __m256 a, const __m256 b) { return a; }
 
-}  // namespace hppl
+}  // namespace paddle

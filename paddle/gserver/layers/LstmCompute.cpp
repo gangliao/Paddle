@@ -26,7 +26,7 @@ void LstmCompute::init(LayerConfig &config) {
 
 template <>
 void LstmCompute::forwardOneSequence<0>(hl_lstm_value value, int frameSize) {
-  hl_cpu_lstm_forward(hppl::forward::lstm(),
+  hl_cpu_lstm_forward(forward::lstm(),
                       value,
                       frameSize,
                       activeNode_,
@@ -38,7 +38,7 @@ template <>
 void LstmCompute::backwardOneSequence<0>(hl_lstm_value value,
                                          hl_lstm_grad grad,
                                          int frameSize) {
-  hl_cpu_lstm_backward(hppl::backward::lstm(),
+  hl_cpu_lstm_backward(backward::lstm(),
                        value,
                        grad,
                        frameSize,

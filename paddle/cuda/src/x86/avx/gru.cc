@@ -12,13 +12,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#include "paddle/math/MathFunctions.h"
+#include "x86/avx/gru.h"
+#include <immintrin.h>
+#include "hl_gru_ops.cuh"
+#include "x86/avx/activation.h"
 
-#ifndef PADDLE_TYPE_DOUBLE
-#define CBLAS_GEMM paddle::gemm<float>
-#else
-#define CBLAS_GEMM paddle::gemm<double>
-#endif
+namespace paddle {
 
 template <class OpResetOutput>
 void hl_avx_gru_forward_reset_output(OpResetOutput opResetOutput,
@@ -45,7 +44,7 @@ void hl_avx_gru_forward_reset_output(OpResetOutput opResetOutput,
                   rValueResetGate,
                   rPrevOut,
                   rValueResetOutput,
-                  hppl::avx::forward[active_gate]);
+                  avx::forward[active_gate]);
 
     updateGate[i] = rValueUpdateGate;
     resetGate[i] = rValueResetGate;
@@ -78,7 +77,7 @@ void hl_avx_gru_forward_final_output(OpFinalOutput opFinalOutput,
                   rValueFrameState,
                   rPrevOut,
                   rOutput,
-                  hppl::avx::forward[active_node]);
+                  avx::forward[active_node]);
 
     frameState[i] = rValueFrameState;
     ((__m256 *)outputValue)[i] = rOutput;
@@ -124,7 +123,7 @@ void hl_avx_gru_backward_state_grad(OpStateGrad opStateGrad,
                 rPrevOutValue,
                 rPrevOutGrad,
                 rOutGrad,
-                hppl::avx::backward[active_node]);
+                avx::backward[active_node]);
 
     updateGateGrad[i] = rUpdateGateGrad;
     frameStateGrad[i] = rFrameStateGrad;
@@ -177,7 +176,7 @@ void hl_avx_gru_backward_reset_grad(OpResetGrad opResetGrad,
                 rPrevOutValue,
                 rPrevOutGrad,
                 rResetOutputGrad,
-                hppl::avx::backward[active_gate]);
+                avx::backward[active_gate]);
 
     updateGateGrad[i] = rUpdateGateGrad;
     resetGateGrad[i] = rResetGateGrad;
@@ -186,3 +185,5 @@ void hl_avx_gru_backward_reset_grad(OpResetGrad opResetGrad,
     }
   }
 }
+
+}  // namespace paddle

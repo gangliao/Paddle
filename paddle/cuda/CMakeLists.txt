@@ -1,25 +1,20 @@
+# header srcs
 file(GLOB_RECURSE CUDA_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/include" "*.h")
+
+# cuda srcs
 file(GLOB_RECURSE CUDA_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/src" "*.cu")
 
 # cpu naive srcs
-set(CPU_SOURCES
-    src/hl_cpu_activation.cc    
-    src/hl_cpu_lstm.cc
-    src/hl_cpu_gru.cc
-    src/hl_dso_loader.cc
-)
+file(GLOB CPU_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/x86/*.cc)
 
 # cpu avx srcs
-set(AVX_SOURCES
-    src/hl_avx_activation.cc
-    src/hl_avx_lstm.cc
-    src/hl_avx_gru.cc
-)
+file(GLOB AVX_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/x86/avx/*.cc)
 set_source_files_properties(${AVX_SOURCES}
                             PROPERTIES COMPILE_FLAGS ${AVX_FLAG})
 
 # cuda dynamic load wrapper srcs
 set(CUDA_WRAPPER_SOURCES
+    src/hl_dso_loader.cc
     src/hl_cudart_wrap.cc
     src/hl_cuda_cublas.cc
     src/hl_cuda_cudnn.cc

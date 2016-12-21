@@ -17,7 +17,7 @@ limitations under the License. */
 #include <immintrin.h>
 #include "hl_base.h"
 
-namespace hppl {
+namespace paddle {
 
 // clang-format off
 __m256 relu   (const __m256 a);
