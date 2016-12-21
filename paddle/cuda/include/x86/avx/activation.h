@@ -12,15 +12,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#include "avx_mathfun.h"
+#pragma once
 
-namespace hppl {
-__m256 exp(__m256 a) { return exp256_ps(a); }
+#include <immintrin.h>
+#include "hl_base.h"
 
-__m256 log(__m256 a) { return log256_ps(a); }
+namespace paddle {
 
-__m256 sin(__m256 a) { return sin256_ps(a); }
+// clang-format off
+__m256 relu   (const __m256 a);
+__m256 sigmoid(const __m256 a);
+__m256 tanh   (const __m256 a);
+__m256 linear (const __m256 a);
 
-__m256 cos(__m256 a) { return cos256_ps(a); }
+__m256 relu   (const __m256 a, const __m256 b);
+__m256 sigmoid(const __m256 a, const __m256 b);
+__m256 tanh   (const __m256 a, const __m256 b);
+__m256 linear (const __m256 a, const __m256 b);
+
+namespace avx {
+static Active<__m256>::forward  forward [] = { sigmoid, relu, tanh, linear };
+static Active<__m256>::backward backward[] = { sigmoid, relu, tanh, linear };
+}
+// clang-format on
 
 }  // namespace hppl

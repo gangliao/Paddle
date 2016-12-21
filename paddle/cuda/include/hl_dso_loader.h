@@ -18,7 +18,6 @@ limitations under the License. */
 #include <dlfcn.h>
 #include <memory>
 #include <string>
-#include "hl_base.h"
 
 /**
  * @brief    load the DSO of CUBLAS

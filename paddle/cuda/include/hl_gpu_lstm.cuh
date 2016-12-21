@@ -205,6 +205,8 @@ __global__ void KeLstmBackward(Op op,
   }
 }
 
+namespace paddle {
+
 template<class Op>
 void hl_gpu_lstm_forward(Op op,
                          hl_lstm_value value,
@@ -274,7 +276,11 @@ void hl_gpu_lstm_backward(Op op,
   CHECK_SYNC("hl_gpu_lstm_backward failed");
 }
 
+}  // namespace paddle
+
 #else
+
+namespace paddle {
 
 template<class Op>
 void hl_gpu_lstm_forward(Op op,
@@ -294,6 +300,8 @@ void hl_gpu_lstm_backward(Op op,
                           hl_activation_mode_t active_node,
                           hl_activation_mode_t active_gate,
                           hl_activation_mode_t active_state) {}
+
+}  // namespace paddle
 
 #endif
 

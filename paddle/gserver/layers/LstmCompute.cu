@@ -21,7 +21,7 @@ namespace paddle {
 template <>
 void LstmCompute::forwardBatch<1>(hl_lstm_value value, int frameSize,
                                  int batchSize) {
-  hl_gpu_lstm_forward(hppl::forward::lstm(), value, frameSize,
+  hl_gpu_lstm_forward(forward::lstm(), value, frameSize,
                       batchSize, activeNode_, activeGate_,
                       activeState_);
 }
@@ -29,14 +29,14 @@ void LstmCompute::forwardBatch<1>(hl_lstm_value value, int frameSize,
 template <>
 void LstmCompute::backwardBatch<1>(hl_lstm_value value, hl_lstm_grad grad,
                                    int frameSize, int batchSize) {
-  hl_gpu_lstm_backward(hppl::backward::lstm(), value, grad,
+  hl_gpu_lstm_backward(backward::lstm(), value, grad,
                        frameSize, batchSize, activeNode_,
                        activeGate_, activeState_);
 }
 
 template <>
 void LstmCompute::forwardOneSequence<1>(hl_lstm_value value, int frameSize) {
-  hl_gpu_lstm_forward(hppl::forward::lstm(), value,
+  hl_gpu_lstm_forward(forward::lstm(), value,
                       frameSize, /* batchSize */ 1,
                       activeNode_, activeGate_, activeState_);
 }
@@ -44,7 +44,7 @@ void LstmCompute::forwardOneSequence<1>(hl_lstm_value value, int frameSize) {
 template <>
 void LstmCompute::backwardOneSequence<1>(hl_lstm_value value, hl_lstm_grad grad,
                                          int frameSize) {
-  hl_gpu_lstm_backward(hppl::backward::lstm(), value, grad,
+  hl_gpu_lstm_backward(backward::lstm(), value, grad,
                        frameSize, /* batchSize */ 1,
                        activeNode_, activeGate_, activeState_);
 }

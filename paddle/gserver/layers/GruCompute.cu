@@ -21,8 +21,8 @@ namespace paddle {
 
 template <>
 void GruCompute::forward<1>(hl_gru_value value, int frameSize, int batchSize) {
-  hl_gpu_gru_forward(hppl::forward::gru_resetOutput(),
-                     hppl::forward::gru_finalOutput(),
+  hl_gpu_gru_forward(forward::gru_resetOutput(),
+                     forward::gru_finalOutput(),
                      value,
                      frameSize,
                      batchSize,
@@ -33,8 +33,8 @@ void GruCompute::forward<1>(hl_gru_value value, int frameSize, int batchSize) {
 template <>
 void GruCompute::backward<1>(hl_gru_value value, hl_gru_grad grad,
                             int frameSize, int batchSize) {
-  hl_gpu_gru_backward(hppl::backward::gru_stateGrad(),
-                      hppl::backward::gru_resetGrad(),
+  hl_gpu_gru_backward(backward::gru_stateGrad(),
+                      backward::gru_resetGrad(),
                       value,
                       grad,
                       frameSize,

@@ -285,6 +285,8 @@ __global__ void KeGruBackwardResetGrad(OpResetGrad opResetGrad,
   }
 }
 
+namespace paddle {
+
 template<class OpStateGrad, class OpResetGrad>
 void hl_gpu_gru_backward(OpStateGrad opStateGrad,
                          OpResetGrad opResetGrad,
@@ -367,7 +369,11 @@ void hl_gpu_gru_backward(OpStateGrad opStateGrad,
   CHECK_SYNC("hl_gpu_gru_backward failed");
 }
 
+}  // namespace paddle
+
 #else
+
+namespace paddle {
 
 template<class OpResetOutput, class OpFinalOutput>
 void hl_gpu_gru_forward(OpResetOutput opResetOutput,
@@ -387,6 +393,8 @@ void hl_gpu_gru_backward(OpStateGrad opStateGrad,
                          int batchSize,
                          hl_activation_mode_t active_node,
                          hl_activation_mode_t active_gate) {}
+
+}  // namespace paddle
 
 #endif
 

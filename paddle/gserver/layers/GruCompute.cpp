@@ -25,8 +25,8 @@ void GruCompute::init(LayerConfig &config) {
 
 template <>
 void GruCompute::forward<0>(hl_gru_value value, int frameSize, int batchSize) {
-  hl_cpu_gru_forward(hppl::forward::gru_resetOutput(),
-                     hppl::forward::gru_finalOutput(),
+  hl_cpu_gru_forward(forward::gru_resetOutput(),
+                     forward::gru_finalOutput(),
                      value,
                      frameSize,
                      batchSize,
@@ -39,8 +39,8 @@ void GruCompute::backward<0>(hl_gru_value value,
                              hl_gru_grad grad,
                              int frameSize,
                              int batchSize) {
-  hl_cpu_gru_backward(hppl::backward::gru_stateGrad(),
-                      hppl::backward::gru_resetGrad(),
+  hl_cpu_gru_backward(backward::gru_stateGrad(),
+                      backward::gru_resetGrad(),
                       value,
                       grad,
                       frameSize,

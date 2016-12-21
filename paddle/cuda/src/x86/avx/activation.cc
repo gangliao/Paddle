@@ -13,11 +13,19 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #include <immintrin.h>
-#include "hl_functions.h"
 
-namespace hppl {
+#include "avx_mathfun.h"
+#include "x86/avx/activation.h"
 
-extern __m256 exp(__m256 a);
+namespace paddle {
+
+inline __m256 exp(__m256 a) { return exp256_ps(a); }
+
+inline __m256 log(__m256 a) { return log256_ps(a); }
+
+inline __m256 sin(__m256 a) { return sin256_ps(a); }
+
+inline __m256 cos(__m256 a) { return cos256_ps(a); }
 
 __m256 relu(const __m256 a) {
   __m256 tmp = _mm256_set1_ps(0.0f);
@@ -66,4 +74,5 @@ __m256 tanh(const __m256 a, const __m256 b) {
 }
 
 __m256 linear(const __m256 a, const __m256 b) { return a; }
-}  // namespace hppl
+
+}  // namespace paddle

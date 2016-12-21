@@ -1,94 +1,36 @@
-set(AVX_SOURCES
-    src/hl_math.cc
-    src/hl_avx_functions.cc
-)
+file(GLOB_RECURSE CUDA_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/include" "*.h")
+file(GLOB_RECURSE CUDA_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/src" "*.cu")
 
-if(WITH_AVX)
-    set(CUDA_SOURCES
-        src/hl_time.cc
-        src/hl_cpu_functions.cc
-        ${AVX_SOURCES})
-else()
-    set(CUDA_SOURCES
-        src/hl_time.cc
-        src/hl_cpu_functions.cc)
-endif()
+file(GLOB CPU_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/x86/*.cc")
+file(GLOB AVX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/x86/avx/*.cc")
+set_source_files_properties(${AVX_SOURCES} PROPERTIES COMPILE_FLAGS ${AVX_FLAG})
 
-set(CUDA_CXX_WITH_GPU_SOURCES
-    src/hl_cudart_wrap.cc
-    src/hl_cuda_cublas.cc
-    src/hl_cuda_cudnn.cc
-    src/hl_cuda_device.cc)
+file(GLOB CUDA_WRAP_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+
+set(WRAP_CTC_SOURCES src/hl_warpctc_wrap.cc)
 
 if(WITH_GPU)
-    set(CUDA_CXX_SOURCES
-        src/hl_dso_loader.cc
-        src/hl_warpctc_wrap.cc
-        ${CUDA_CXX_WITH_GPU_SOURCES})
-
-    set_source_files_properties(${CUDA_CXX_SOURCES}
+    set_source_files_properties(${CPU_SOURCES}
+                                ${AVX_SOURCES}
+                                ${WRAP_CTC_SOURCES}
+                                ${CUDA_WRAP_SOURCES}
                                 PROPERTIES COMPILE_FLAGS "-D__NVCC__")
-else()
-    set(CUDA_CXX_SOURCES
-        src/hl_dso_loader.cc
-        src/hl_warpctc_wrap.cc)
-endif()
-
-set(CUDA_CU_SOURCES
-    src/hl_perturbation_util.cu
-    src/hl_cuda_aggregate.cu
-    src/hl_cuda_matrix.cu
-    src/hl_cuda_sparse.cu
-    src/hl_cuda_cnn.cu
-    src/hl_cuda_lstm.cu
-    src/hl_top_k.cu
-    src/hl_batch_transpose.cu
-    src/hl_cuda_sequence.cu
-    src/hl_table_apply.cu)
-
-set(CUDA_HEADERS
-    include/hl_time.h
-    include/hl_dso_loader.h
-    include/hl_warpctc_wrap.h
-    include/hl_sequence.h
-    include/hl_cuda_cublas.h
-    include/hl_batch_transpose.h
-    include/hl_avx_functions.h
-    include/hl_sparse.h
-    include/hl_functions.h
-    include/hl_cuda_cudnn.h
-    include/hl_activation_functions.h
-    include/hl_base.h
-    include/stub/hl_cuda_cudnn_stub.h
-    include/stub/hl_cuda_stub.h
-    include/stub/hl_cuda_cublas_stub.h
-    include/stub/hl_cnn_stub.h
-    include/stub/hl_lstm_stub.h
-    include/stub/hl_sequence_stub.h
-    include/stub/hl_aggregate_stub.h
-    include/stub/hl_sparse_stub.h
-    include/stub/hl_matrix_stub.h
-    include/hl_aggregate.h
-    include/hl_cuda.h
-    include/hl_lstm.h
-    include/hl_table_apply.h
-    include/hl_gpu.h
-    include/hl_top_k.h
-    include/hl_matrix.h
-    include/hl_cnn.h)
-
-if(WITH_GPU)
     cuda_add_library(paddle_cuda
-        ${CUDA_SOURCES}
-        ${CUDA_CU_SOURCES}
-        ${CUDA_CXX_SOURCES})
-else()
+                    ${CPU_SOURCES}
+                    ${AVX_SOURCES}
+                    ${CUDA_SOURCES}
+                    ${WRAP_CTC_SOURCES}
+                    ${CUDA_WRAP_SOURCES})
+else(WITH_GPU)
     add_library(paddle_cuda
-                ${CUDA_SOURCES}
-                ${CUDA_CXX_SOURCES})
-endif()
+                ${CPU_SOURCES}
+                ${AVX_SOURCES}
+                ${WRAP_CTC_SOURCES}
+                src/hl_dso_loader.cc)
+endif(WITH_GPU)
 
 add_style_check_target(paddle_cuda
-                       ${CUDA_SOURCES}
-                       ${CUDA_HEADERS}
-                       ${CUDA_CXX_SOURCES})
+                       ${CPU_SOURCES}
+                       ${AVX_SOURCES}
+                       ${WRAP_CTC_SOURCES}
+                       ${CUDA_WRAPPER_SOURCES})
