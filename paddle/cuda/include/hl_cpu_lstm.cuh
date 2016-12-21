@@ -12,9 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-#include "paddle/utils/CpuId.h"
-#include "x86/avx/lstm.h"
 #include "x86/lstm.h"
+#include "x86/avx/lstm.h"
+#include "paddle/utils/CpuId.h"
 
 namespace paddle {
 

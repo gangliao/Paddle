@@ -14,10 +14,12 @@ limitations under the License. */
 
 #pragma once
 
-#include "hl_gpu_lstm.cuh"
-#include "hl_gpu_gru.cuh"
 #include "hl_lstm_ops.cuh"
+#include "hl_gpu_lstm.cuh"
+#include "hl_cpu_lstm.cuh"
 #include "hl_gru_ops.cuh"
+#include "hl_gpu_gru.cuh"
+#include "hl_cpu_gru.cuh"
 
 namespace paddle {
 
