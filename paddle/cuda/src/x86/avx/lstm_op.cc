@@ -35,30 +35,6 @@ namespace forward {
  * @param   actGate     forward function of gate
  * @param   actState    forward function of state
  */
-//  template<>
-//   void lstm::operator()(real &valueIn,
-//                         real &valueIg,
-//                         real &valueFg,
-//                         real &valueOg,
-//                         real &prevState,
-//                         real &state,
-//                         real &stateAtv,
-//                         real &output,
-//                         real &checkI,
-//                         real &checkF,
-//                         real &checkO,
-//                         Active<real>::forward actInput,
-//                         Active<real>::forward actGate,
-//                         Active<real>::forward actState) {
-//     valueIn = actInput(valueIn);
-//     valueIg = actGate(valueIg + prevState * checkI);
-//     valueFg = actGate(valueFg + prevState * checkF);
-//     state = valueIn * valueIg + prevState * valueFg;
-//     valueOg = actGate(valueOg + state * checkO);
-//     stateAtv = actState(state);
-//     output = valueOg * stateAtv;
-//   }
-
 template <>
 void lstm::operator()(__m256 &valueIn,
                       __m256 &valueIg,
@@ -111,41 +87,6 @@ namespace backward {
  * @param   actGate         backward function of gate
  * @param   actState        backward function of state
  */
-//   template<>
-//   void lstm::operator()(real &valueIn,
-//                         real &valueIg,
-//                         real &valueFg,
-//                         real &valueOg,
-//                         real &gradIn,
-//                         real &gradIg,
-//                         real &gradFg,
-//                         real &gradOg,
-//                         real &prevState,
-//                         real &prevStateGrad,
-//                         real &state,
-//                         real &stateGrad,
-//                         real &stateAtv,
-//                         real &outputGrad,
-//                         real &checkI,
-//                         real &checkF,
-//                         real &checkO,
-//                         real &checkIGrad,
-//                         real &checkFGrad,
-//                         real &checkOGrad,
-//                         Active<real>::backward actInput,
-//                         Active<real>::backward actGate,
-//                         Active<real>::backward actState) {
-//     gradOg = actGate(outputGrad * stateAtv, valueOg);
-//     stateGrad += actState(outputGrad * valueOg, stateAtv) + gradOg * checkO;
-//     gradIn = actInput(stateGrad * valueIg, valueIn);
-//     gradIg = actGate(stateGrad * valueIn, valueIg);
-//     gradFg = actGate(stateGrad * prevState, valueFg);
-//     prevStateGrad = gradIg * checkI + gradFg * checkF + stateGrad * valueFg;
-//     checkIGrad = gradIg * prevState;
-//     checkFGrad = gradFg * prevState;
-//     checkOGrad = gradOg * state;
-//   }
-
 template <>
 void lstm::operator()(__m256 &valueIn,
                       __m256 &valueIg,
