@@ -82,10 +82,10 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
         CONFIGURE_COMMAND   env PATH=${NCURSES_INSTALL_DIR}/bin/:${READLINE_INSTALL_DIR}/bin/:$ENV{PATH}
                             LD_LIBRARY_PATH=${NCURSES_INSTALL_DIR}/lib/:${NCURSES_INSTALL_DIR}/lib64/:${READLINE_INSTALL_DIR}/lib/:${READLINE_INSTALL_DIR}/lib64/:$ENV{LD_LIBRARY_PATH}
                             DYLD_LIBRARY_PATH=${NCURSES_INSTALL_DIR}/lib/:${NCURSES_INSTALL_DIR}/lib64/:${READLINE_INSTALL_DIR}/lib/:${READLINE_INSTALL_DIR}/lib64/:$ENV{DYLD_LIBRARY_PATH}
-                            <SOURCE_DIR>/configure --enable-static --prefix=${PYTHON_INSTALL_DIR}
+                            <SOURCE_DIR>/configure --enable-shared --prefix=${PYTHON_INSTALL_DIR}
         UPDATE_COMMAND      ""
         BUILD_IN_SOURCE     1
-        DEPENDS ncurses readline zlib
+        DEPENDS             ncurses readline zlib
     )
 
     SET(py_env
