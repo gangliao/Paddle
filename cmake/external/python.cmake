@@ -27,6 +27,33 @@ IF(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
     find_python_module(google.protobuf REQUIRED)
     FIND_PACKAGE(NumPy REQUIRED)
 ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
+    ##################################### ncurses #######################################
+    SET(NCURSES_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ncurses)
+    SET(NCURSES_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/install/ncurses)
+    ExternalProject_Add(ncurses
+        ${EXTERNAL_PROJECT_LOG_ARGS}
+        PREFIX              ${NCURSES_SOURCES_DIR}
+        URL                 http://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz
+        CONFIGURE_COMMAND   <SOURCE_DIR>/configure --prefix=${NCURSES_INSTALL_DIR}
+        UPDATE_COMMAND      ""
+        BUILD_IN_SOURCE     1
+    )
+    ####################################################################################
+
+    #################################### readline #######################################
+    SET(READLINE_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/readline)
+    SET(READLINE_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/install/readline)
+    ExternalProject_Add(readline
+        ${EXTERNAL_PROJECT_LOG_ARGS}
+        PREFIX              ${READLINE_SOURCES_DIR}
+        URL                 http://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz
+        CONFIGURE_COMMAND   <SOURCE_DIR>/configure --prefix=${READLINE_INSTALL_DIR}
+        UPDATE_COMMAND      ""
+        BUILD_IN_SOURCE     1
+        DEPENDS ncurses
+    )
+    ####################################################################################
+
     ##################################### PYTHON ########################################
     SET(PYTHON_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/python)
     SET(PYTHON_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/install/python)
@@ -48,50 +75,23 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
         MESSAGE(FATAL_ERROR "Unknown system !")
     ENDIF()
 
-    IF(APPLE)
-        LIST(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_ARGS
-            -DCMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=ON
-            )
-    ENDIF()
-
-    SET(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
-
-    # Force Python build to "Release".
-    IF(CMAKE_CONFIGURATION_TYPES)
-        SET(SAVED_CMAKE_CFG_INTDIR ${CMAKE_CFG_INTDIR})
-        SET(CMAKE_CFG_INTDIR "Release")
-    ELSE()
-        LIST(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
-            -DCMAKE_BUILD_TYPE:STRING=Release
-            )
-    ENDIF()
-
     ExternalProject_Add(python
         ${EXTERNAL_PROJECT_LOG_ARGS}
-        GIT_REPOSITORY    "https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git"
-        PREFIX            ${PYTHON_SOURCES_DIR}
-        UPDATE_COMMAND    ""
-        CMAKE_ARGS        -DPYTHON_VERSION=2.7.12
-        CMAKE_ARGS        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-        CMAKE_ARGS        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-        CMAKE_CACHE_ARGS
-            -DCMAKE_INSTALL_PREFIX:PATH=${PYTHON_INSTALL_DIR}
-            -DBUILD_LIBPYTHON_SHARED:BOOL=OFF
-            -DUSE_SYSTEM_LIBRARIES:BOOL=OFF
-            -DZLIB_ROOT:FILEPATH=${ZLIB_ROOT}
-            -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
-            -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARIES}
-            -DDOWNLOAD_SOURCES:BOOL=ON
-            -DINSTALL_WINDOWS_TRADITIONAL:BOOL=OFF
-            ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS}
-            ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_ARGS}
-        DEPENDS zlib
+        PREFIX              ${PYTHON_SOURCES_DIR}
+        URL                 https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
+        CONFIGURE_COMMAND   env PATH=${NCURSES_INSTALL_DIR}/bin/:${READLINE_INSTALL_DIR}/bin/:$ENV{PATH}
+                            LD_LIBRARY_PATH=${NCURSES_INSTALL_DIR}/lib/:${NCURSES_INSTALL_DIR}/lib64/:${READLINE_INSTALL_DIR}/lib/:${READLINE_INSTALL_DIR}/lib64/:$ENV{LD_LIBRARY_PATH}
+                            DYLD_LIBRARY_PATH=${NCURSES_INSTALL_DIR}/lib/:${NCURSES_INSTALL_DIR}/lib64/:${READLINE_INSTALL_DIR}/lib/:${READLINE_INSTALL_DIR}/lib64/:$ENV{DYLD_LIBRARY_PATH}
+                            <SOURCE_DIR>/configure --enable-shared --prefix=${PYTHON_INSTALL_DIR}
+        UPDATE_COMMAND      ""
+        BUILD_IN_SOURCE     1
+        DEPENDS ncurses readline zlib
     )
 
     SET(py_env
         PATH=${PYTHON_INSTALL_DIR}/bin
         PYTHONHOME=${PYTHON_INSTALL_DIR}
-        PYTHONPATH=${PYTHON_INSTALL_DIR}/lib:${PYTHON_INSTALL_DIR}/lib/python2.7:${PY_SITE_PACKAGES_PATH})
+        PYTHONPATH=${PYTHON_INSTALL_DIR}/lib/python:${PYTHON_INSTALL_DIR}/lib/python2.7/lib-dynload:${PY_SITE_PACKAGES_PATH})
     ####################################################################################
 
     ##################################### SETUPTOOLS ###################################
@@ -204,6 +204,7 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
         BUILD_IN_SOURCE       1
         PATCH_COMMAND         ""
         CONFIGURE_COMMAND     ""
+        UPDATE_COMMAND        ""
         BUILD_COMMAND         env ${py_env} ${PYTHON_EXECUTABLE} setup.py build
         INSTALL_COMMAND       env ${py_env} ${PYTHON_EXECUTABLE} setup.py install
         DEPENDS               python setuptools six
@@ -216,7 +217,3 @@ ENDIF(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
 
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${PYTHON_NUMPY_INCLUDE_DIR})
-
-MESSAGE("[Paddle] Python Executable: ${PYTHON_EXECUTABLE}")
-MESSAGE("[Paddle] Python Include: ${PYTHON_INCLUDE_DIRS}")
-MESSAGE("[Paddle] Python Libraries: ${PYTHON_LIBRARIES}")
