@@ -62,13 +62,13 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
     IF(UNIX)
         SET(PYTHON_FOUND ON)
         SET(PYTHON_INCLUDE_DIR "${PYTHON_INSTALL_DIR}/include/python2.7" CACHE PATH "Python include dir" FORCE)
-        SET(PYTHON_LIBRARIES "${PYTHON_INSTALL_DIR}/lib/libpython2.7.so" CACHE FILEPATH "Python library" FORCE)
+        SET(PYTHON_LIBRARIES "${PYTHON_INSTALL_DIR}/lib/libpython2.7.a" CACHE FILEPATH "Python library" FORCE)
         SET(PYTHON_EXECUTABLE ${PYTHON_INSTALL_DIR}/bin/python CACHE FILEPATH "Python executable" FORCE)
         SET(PY_SITE_PACKAGES_PATH "${PYTHON_INSTALL_DIR}/lib/python2.7/site-packages" CACHE PATH "Python site-packages path" FORCE)
     ELSEIF(WIN32)
         SET(PYTHON_FOUND ON)
         SET(PYTHON_INCLUDE_DIR "${PYTHON_INSTALL_DIR}/include" CACHE PATH "Python include dir" FORCE)
-        SET(PYTHON_LIBRARIES "${PYTHON_INSTALL_DIR}/libs/python27.dll" CACHE FILEPATH "Python library" FORCE)
+        SET(PYTHON_LIBRARIES "${PYTHON_INSTALL_DIR}/libs/python27.lib" CACHE FILEPATH "Python library" FORCE)
         SET(PYTHON_EXECUTABLE "${PYTHON_INSTALL_DIR}/bin/python.exe" CACHE FILEPATH "Python executable" FORCE)
         SET(PY_SITE_PACKAGES_PATH "${PYTHON_INSTALL_DIR}/Lib/site-packages" CACHE PATH "Python site-packages path" FORCE)
     ELSE()
@@ -82,7 +82,7 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
         CONFIGURE_COMMAND   env PATH=${NCURSES_INSTALL_DIR}/bin/:${READLINE_INSTALL_DIR}/bin/:$ENV{PATH}
                             LD_LIBRARY_PATH=${NCURSES_INSTALL_DIR}/lib/:${NCURSES_INSTALL_DIR}/lib64/:${READLINE_INSTALL_DIR}/lib/:${READLINE_INSTALL_DIR}/lib64/:$ENV{LD_LIBRARY_PATH}
                             DYLD_LIBRARY_PATH=${NCURSES_INSTALL_DIR}/lib/:${NCURSES_INSTALL_DIR}/lib64/:${READLINE_INSTALL_DIR}/lib/:${READLINE_INSTALL_DIR}/lib64/:$ENV{DYLD_LIBRARY_PATH}
-                            <SOURCE_DIR>/configure --enable-shared --prefix=${PYTHON_INSTALL_DIR}
+                            <SOURCE_DIR>/configure --enable-static --prefix=${PYTHON_INSTALL_DIR}
         UPDATE_COMMAND      ""
         BUILD_IN_SOURCE     1
         DEPENDS             ncurses readline zlib
@@ -91,10 +91,10 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
     SET(py_env
         PATH=${PYTHON_INSTALL_DIR}/bin:$ENV{PATH}
         CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
-        LD_LIBRARY_PATH=${PYTHON_INSTALL_DIR}/lib/:$ENV{LD_LIBRARY_PATH}
-        DYLD_LIBRARY_PATH=${PYTHON_INSTALL_DIR}/lib/:$ENV{DYLD_LIBRARY_PATH}
+        # LD_LIBRARY_PATH=${PYTHON_INSTALL_DIR}/lib/:$ENV{LD_LIBRARY_PATH}
+        # DYLD_LIBRARY_PATH=${PYTHON_INSTALL_DIR}/lib/:$ENV{DYLD_LIBRARY_PATH}
         PYTHONHOME=${PYTHON_INSTALL_DIR}
-        PYTHONPATH=${PYTHON_INSTALL_DIR}/lib/python2.7:${PYTHON_INSTALL_DIR}/lib/python2.7/lib-dynload:${PY_SITE_PACKAGES_PATH})
+        PYTHONPATH=${PYTHON_INSTALL_DIR}/lib/python2.7:${PYTHON_INSTALL_DIR}/lib/python2.7/lib-dynload:${PY_SITE_PACKAGES_PATH}:$ENV{PYTHONPATH})
     ####################################################################################
 
     ##################################### SETUPTOOLS ###################################
