@@ -91,7 +91,7 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
     SET(py_env
         PATH=${PYTHON_INSTALL_DIR}/bin
         PYTHONHOME=${PYTHON_INSTALL_DIR}
-        PYTHONPATH=${PYTHON_INSTALL_DIR}/lib/python:${PYTHON_INSTALL_DIR}/lib/python2.7/lib-dynload:${PY_SITE_PACKAGES_PATH})
+        PYTHONPATH=${PYTHON_INSTALL_DIR}/lib:${PYTHON_INSTALL_DIR}/lib/python2.7:${PYTHON_INSTALL_DIR}/lib/python2.7/lib-dynload:${PY_SITE_PACKAGES_PATH})
     ####################################################################################
 
     ##################################### SETUPTOOLS ###################################
