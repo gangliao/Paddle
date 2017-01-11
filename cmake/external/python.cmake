@@ -89,10 +89,8 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
     )
 
     SET(py_env
-        PATH=${PYTHON_INSTALL_DIR}/bin:$ENV{PATH}
+        PATH=${PROTOBUF_INSTALL_DIR}/bin:${PYTHON_INSTALL_DIR}/bin:$ENV{PATH}
         CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
-        # LD_LIBRARY_PATH=${PYTHON_INSTALL_DIR}/lib/:$ENV{LD_LIBRARY_PATH}
-        # DYLD_LIBRARY_PATH=${PYTHON_INSTALL_DIR}/lib/:$ENV{DYLD_LIBRARY_PATH}
         PYTHONHOME=${PYTHON_INSTALL_DIR}
         PYTHONPATH=${PYTHON_INSTALL_DIR}/lib/python2.7:${PYTHON_INSTALL_DIR}/lib/python2.7/lib-dynload:${PY_SITE_PACKAGES_PATH}:$ENV{PYTHONPATH})
     ####################################################################################
@@ -210,7 +208,7 @@ ELSE(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
         UPDATE_COMMAND        ""
         BUILD_COMMAND         env ${py_env} ${PYTHON_EXECUTABLE} setup.py build
         INSTALL_COMMAND       env ${py_env} ${PYTHON_EXECUTABLE} setup.py install
-        DEPENDS               python setuptools six
+        DEPENDS               python setuptools six protobuf
     )
     ####################################################################################
 
