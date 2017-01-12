@@ -37,7 +37,7 @@ IF(NOT ${CBLAS_FOUND})
     ExternalProject_Add(
         openblas
         GIT_REPOSITORY      "http://github.com/xianyi/OpenBLAS.git"
-        GIT_TAG             "v0.2.19"
+        GIT_TAG             "v0.2.18"
         PREFIX              ${CBLAS_SOURCES_DIR}
         INSTALL_DIR         ${CBLAS_INSTALL_DIR}
         BUILD_IN_SOURCE     1
