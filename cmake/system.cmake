@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+INCLUDE(CMakeDetermineCCompiler)
+INCLUDE(CMakeDetermineCXXCompiler)
+include(CMakeDetermineFortranCompiler)
+
 IF(WIN32)
     SET(HOST_SYSTEM "win32")
 ELSE(WIN32)
