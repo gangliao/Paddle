@@ -3,6 +3,7 @@ source ./common.sh
 
 NPROC=1
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  /usr/bin/gfortran-4.8 --version
   export PYTHONPATH=/opt/python/2.7.12/lib/python2.7/site-packages
   export PYTHONHOME=/opt/python/2.7.12
   export PATH=/opt/python/2.7.12/bin:${PATH}
