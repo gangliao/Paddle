@@ -36,14 +36,19 @@ IF(NOT ${CBLAS_FOUND})
 
     ExternalProject_Add(
         openblas
-        GIT_REPOSITORY      "git://github.com/xianyi/OpenBLAS.git"
+        GIT_REPOSITORY      "http://github.com/xianyi/OpenBLAS.git"
         GIT_TAG             "v0.2.19"
         PREFIX              ${CBLAS_SOURCES_DIR}
         INSTALL_DIR         ${CBLAS_INSTALL_DIR}
         BUILD_IN_SOURCE     1
         CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       make CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} NO_SHARED=1 # libs netlib
-        INSTALL_COMMAND     make install NO_SHARED=1 PREFIX=<INSTALL_DIR>
+#        BUILD_COMMAND       make FC=${CMAKE_Fortran_COMPILER} CC=${CMAKE_C_COMPILER} NO_SHARED=1 # libs netlib
+#        INSTALL_COMMAND     make install NO_SHARED=1 PREFIX=<INSTALL_DIR>
+        CMAKE_ARGS          -DCMAKE_INSTALL_PREFIX=${CBLAS_INSTALL_DIR}
+        CMAKE_ARGS          -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+        CMAKE_ARGS          -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+        CMAKE_ARGS          -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
+        CMAKE_ARGS          -DNO_SHARED=ON
         UPDATE_COMMAND      ""
     )
 
