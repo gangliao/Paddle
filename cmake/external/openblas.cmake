@@ -27,15 +27,12 @@ IF(NOT ${CBLAS_FOUND})
         SET(CBLAS_LIBRARIES "${CBLAS_INSTALL_DIR}/lib/libopenblas.a" CACHE FILEPATH "openblas library" FORCE)
     ENDIF(WIN32)
 
-    IF(CMAKE_COMPILER_IS_GNUCC)
-        ENABLE_LANGUAGE(Fortran)
-        LIST(APPEND CBLAS_LIBRARIES gfortran pthread)
-    ENDIF(CMAKE_COMPILER_IS_GNUCC)
+    SET(CBLAS_COMPILER_ARGS "CC=${CMAKE_C_COMPILER} HOSTCC=${CMAKE_C_COMPILER}")
 
-    IF(NOT CMAKE_Fortran_COMPILER)
-        MESSAGE(FATAL_ERROR "To build lapack in libopenblas, "
-                "you need to set gfortran compiler: cmake .. -DCMAKE_Fortran_COMPILER=...")
-    ENDIF(NOT CMAKE_Fortran_COMPILER)
+    IF(CMAKE_Fortran_COMPILER)
+        SET(CBLAS_COMPILER_ARGS "FC=${CMAKE_Fortran_COMPILER} CC=${CMAKE_C_COMPILER} HOSTCC=${CMAKE_C_COMPILER}")
+        LIST(APPEND CBLAS_LIBRARIES gfortran pthread)
+    ENDIF(CMAKE_Fortran_COMPILER)
 
     ExternalProject_Add(
         openblas
@@ -45,7 +42,7 @@ IF(NOT ${CBLAS_FOUND})
         PREFIX              ${CBLAS_SOURCES_DIR}
         INSTALL_DIR         ${CBLAS_INSTALL_DIR}
         BUILD_IN_SOURCE     1
-        BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} FC=${CMAKE_Fortran_COMPILER} CC=${CMAKE_C_COMPILER} HOSTCC=${CMAKE_C_COMPILER} NO_SHARED=1 libs netlib
+        BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} ${CBLAS_COMPILER_ARGS} NO_SHARED=1 libs netlib
         INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install NO_SHARED=1 PREFIX=<INSTALL_DIR>
         UPDATE_COMMAND      ""
         CONFIGURE_COMMAND   ""
