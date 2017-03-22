@@ -40,7 +40,7 @@ IF(NOT ${CBLAS_FOUND})
         INSTALL_DIR         ${CBLAS_INSTALL_DIR}
         BUILD_IN_SOURCE     1
         CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       make CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} NO_SHARED=1 libs netlib
+        BUILD_COMMAND       make CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} DYNAMIC_ARCH=1 NO_SHARED=1 libs netlib
         INSTALL_COMMAND     make install NO_SHARED=1 PREFIX=<INSTALL_DIR>
         UPDATE_COMMAND      ""
     )
