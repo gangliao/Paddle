@@ -205,6 +205,22 @@ typedef struct {
   size_t nnz;
 } _hl_sparse_matrix_s, *hl_sparse_matrix_s;
 
+/// sigmoid maximum threshold
+#define SIGMOID_THRESHOLD_MIN -40.0
+
+/// sigmoid minimum threshold
+#define SIGMOID_THRESHOLD_MAX 13.0
+
+/**
+ * activation template class
+ */
+template <class T>
+class Active {
+public:
+  using forward = T (*)(T);
+  using backward = T (*)(T, T);
+};
+
 #ifdef __NVCC__
 
 #include "cuda_runtime.h"
@@ -230,4 +246,4 @@ extern __thread cudaStream_t default_stream;
 
 #endif /* __NVCC__ */
 
-#endif /* HL_BASE_H_ */
+#endif  // HL_BASE_H_
