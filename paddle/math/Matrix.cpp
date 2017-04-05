@@ -483,6 +483,20 @@ void GpuMatrix::sequenceAvgForward(Matrix& a,
   hl_sequence_avg_forward(dst, src, starts, height, width, mode);
 }
 
+void GpuMatrix::sequenceAvgBackward(Matrix& a,
+                                    const IVector& startsPos,
+                                    int mode) {
+  size_t height = a.getHeight();
+  size_t width = getWidth();
+  CHECK_EQ(height, startsPos.getSize() - 1);
+  CHECK_EQ(width, a.getWidth());
+  real* dst = getData();
+  real* src = a.getData();
+  const int* starts = startsPos.getData();
+
+  hl_sequence_avg_backward(dst, src, starts, height, width, mode);
+}
+
 /* this = scaleAB*(a*b) +  scaleT*this */
 void GpuMatrix::mul(const GpuMatrix& a,
                     const GpuMatrix& b,
@@ -2304,6 +2318,41 @@ void CpuMatrix::sequenceAvgForward(Matrix& a,
   }
 }
 
+void CpuMatrix::sequenceAvgBackward(Matrix& a,
+                                    const IVector& startsPos,
+                                    int mode) {
+  size_t height = a.getHeight();
+  size_t width = getWidth();
+  CHECK_EQ(height, startsPos.getSize() - 1);
+  CHECK_EQ(width, a.getWidth());
+  real* dst = getData();
+  real* src = a.getData();
+  const int* starts = startsPos.getData();
+  MatrixPtr outMtx = Matrix::create(nullptr, 1, width, false, false);
+  MatrixPtr dataMtx = Matrix::create(nullptr, 1, width, false, false);
+  for (size_t i = 0; i < height; ++i) {
+    int sequenceLength = starts[i + 1] - starts[i];
+    if (0 == sequenceLength) {
+      // empty sequence
+      continue;
+    }
+    outMtx->setData(dst + starts[i] * width, sequenceLength, width);
+    dataMtx->setData(src + i * width);
+    if (mode == 0) {
+      // plain average
+      outMtx->addBias(*dataMtx, 1.0f / sequenceLength);
+    } else if (mode == 1) {
+      // sum instead of average
+      outMtx->addBias(*dataMtx, 1.0f);
+    } else if (mode == 2) {
+      // divide by square root of sequenceLength
+      outMtx->addBias(*dataMtx, 1.0f / std::sqrt(sequenceLength));
+    } else {
+      LOG(FATAL) << "should not reach here";
+    }
+  }
+}
+
 /* this = scaleAB*(a*b) + scaleT*this*/
 void CpuMatrix::mul(const Matrix& a,
                     const Matrix& b,
@@ -3586,6 +3635,55 @@ void CpuMatrix::sumOfSquaresBp(Matrix& output, Matrix& label) {
        ++i, out += outLd, lbl += lblLd, grad += ld) {
     for (size_t j = 0; j < dim; ++j) {
       grad[j] += 2.0 * (out[j] - lbl[j]);  // positive gradient;
+    }
+  }
+}
+
+void CpuMatrix::smoothL1(Matrix& output, Matrix& label) {
+  CHECK(output.useGpu_ == false && label.useGpu_ == false)
+      << "Matrix type are not equal";
+
+  size_t numSamples = getHeight();
+  size_t dim = output.getWidth();
+  CHECK_EQ(label.getHeight(), numSamples);
+  CHECK_EQ(output.getHeight(), numSamples);
+  CHECK_EQ(label.getWidth(), dim);
+  CHECK_EQ(getWidth(), (size_t)1);
+  real* out = output.getData();
+  real* cost = getData();
+  real* lbl = label.getData();
+
+  for (size_t i = 0; i < numSamples; ++i, out += dim, cost += dim, lbl += dim) {
+    for (size_t j = 0; j < dim; ++j) {
+      cost[j] = std::fabs(out[j] - lbl[j]);
+      if (cost[j] < 1.0)
+        cost[j] = 0.5 * cost[j] * cost[j];
+      else
+        cost[j] = cost[j] - 0.5;
+    }
+  }
+}
+
+void CpuMatrix::smoothL1Bp(Matrix& output, Matrix& label) {
+  CHECK(output.useGpu_ == false && label.useGpu_ == false)
+      << "Matrix type are not equal";
+
+  size_t numSamples = getHeight();
+  size_t dim = output.getWidth();
+  CHECK_EQ(label.getHeight(), numSamples);
+  CHECK_EQ(output.getHeight(), numSamples);
+  CHECK_EQ(label.getWidth(), dim);
+  CHECK_EQ(getWidth(), (size_t)1);
+  real* out = output.getData();
+  real* cost = getData();
+  real* lbl = label.getData();
+
+  // f'(x) = x         if |x| < 1
+  //       = sign(x)   otherwise
+  for (size_t i = 0; i < numSamples; ++i, out += dim, cost += dim, lbl += dim) {
+    for (size_t j = 0; j < dim; ++j) {
+      cost[j] = out[j] - lbl[j];
+      if (std::fabs(cost[j]) >= 1) cost[j] = (0 < cost[j]) - (cost[j] < 0);
     }
   }
 }
