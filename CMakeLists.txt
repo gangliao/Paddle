@@ -89,6 +89,7 @@ set(EXTERNAL_LIBS
     ${CBLAS_LIBRARIES}
     ${PROTOBUF_LIBRARY}
     ${ZLIB_LIBRARIES}
+    ${CLAPACK_LIBRARIES}
 )
 
 add_subdirectory(proto)

@@ -27,7 +27,6 @@ IF(NOT ${CBLAS_FOUND})
         SET(CBLAS_LIBRARIES "${CBLAS_INSTALL_DIR}/lib/libopenblas.a" CACHE FILEPATH "openblas library" FORCE)
     ENDIF(WIN32)
 
-
     ExternalProject_Add(
         openblas
         ${EXTERNAL_PROJECT_LOG_ARGS}
@@ -36,20 +35,11 @@ IF(NOT ${CBLAS_FOUND})
         PREFIX              ${CBLAS_SOURCES_DIR}
         INSTALL_DIR         ${CBLAS_INSTALL_DIR}
         BUILD_IN_SOURCE     1
-        BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} CC=${CMAKE_C_COMPILER} HOSTCC=${CMAKE_C_COMPILER} NO_SHARED=1 libs netlib
-        INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install NO_SHARED=1 PREFIX=<INSTALL_DIR>
+        BUILD_COMMAND       ${CMAKE_MAKE_PROGRAM} CC=${CMAKE_C_COMPILER} HOSTCC=${CMAKE_C_COMPILER} NO_LAPACKE=1 NO_SHARED=1 libs netlib
+        INSTALL_COMMAND     ${CMAKE_MAKE_PROGRAM} install NO_LAPACKE=1 NO_SHARED=1 PREFIX=<INSTALL_DIR>
         UPDATE_COMMAND      ""
         CONFIGURE_COMMAND   ""
     )
-
-#     ExternalProject_Add_Step(
-#         openblas lapacke_install
-#         COMMAND ${CMAKE_COMMAND} -E copy "${CBLAS_SOURCES_DIR}/src/openblas/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h" "${CBLAS_INSTALL_DIR}/include/lapacke_mangling.h"
-#  #       COMMAND ${CMAKE_COMMAND} -E copy "${CBLAS_SOURCES_DIR}/src/openblas/lapack-netlib/LAPACKE/include/lapacke.h" "${CBLAS_INSTALL_DIR}/include/lapacke.h"
-#         COMMAND ${CMAKE_COMMAND} -E copy "${CBLAS_SOURCES_DIR}/src/openblas/lapack-netlib/LAPACKE/include/lapacke_config.h" "${CBLAS_INSTALL_DIR}/include/lapacke_config.h"
-#         COMMAND ${CMAKE_COMMAND} -E copy "${CBLAS_SOURCES_DIR}/src/openblas/lapack-netlib/LAPACKE/include/lapacke_utils.h" "${CBLAS_INSTALL_DIR}/include/lapacke_utils.h"
-#         DEPENDEES install
-#     )
 
     LIST(APPEND external_project_dependencies openblas)
 ENDIF(NOT ${CBLAS_FOUND})

@@ -16,6 +16,8 @@ limitations under the License. */
 #include "hl_matrix_apply.cuh"
 #include "hl_matrix_ops.cuh"
 
+#include <cmath>
+
 namespace paddle {
 
 template <>
@@ -80,55 +82,77 @@ void gemm<double>(const CBLAS_TRANSPOSE transA,
 
 template <>
 int getrf<float>(const CBLAS_ORDER order,
-                 const int M,
-                 const int N,
+                 int M,
+                 int N,
                  float* A,
-                 const int lda,
+                 int lda,
                  int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_sgetrf(order, M, N, A, lda, ipiv);
 #else
-  return LAPACKE_sgetrf(order, M, N, A, lda, ipiv);
+  int i;
+  FORTRAN_SINGLE_ORDER(M, N, A);
+  IPIV_FORTRAN(lda, ipiv);
+  int res = sgetrf_(&M, &N, A, &lda, ipiv, &i);
+  IPIV_C(lda, ipiv);
+  FORTRAN_SINGLE_ORDER(M, N, A);
+  return res;
 #endif
 }
 
 template <>
 int getrf<double>(const CBLAS_ORDER order,
-                  const int M,
-                  const int N,
+                  int M,
+                  int N,
                   double* A,
-                  const int lda,
+                  int lda,
                   int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_dgetrf(order, M, N, A, lda, ipiv);
 #else
-  return LAPACKE_dgetrf(order, M, N, A, lda, ipiv);
+  int i;
+  FORTRAN_DOUBLE_ORDER(M, N, A);
+  IPIV_FORTRAN(lda, ipiv);
+  int res = dgetrf_(&M, &N, A, &lda, ipiv, &i);
+  IPIV_C(lda, ipiv);
+  FORTRAN_DOUBLE_ORDER(M, N, A);
+  return res;
 #endif
 }
 
 template <>
 int getri<float>(const CBLAS_ORDER order,
-                 const int N,
+                 int N,
                  float* A,
-                 const int lda,
-                 const int* ipiv) {
+                 int lda,
+                 int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_sgetri(order, N, A, lda, ipiv);
 #else
-  return LAPACKE_sgetri(order, N, A, lda, ipiv);
+  int i;
+  int lwork = N * N;
+  float *work = new float[lwork];
+  int res = sgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
+  delete[] work;
+  return res;
 #endif
 }
 
 template <>
 int getri<double>(const CBLAS_ORDER order,
-                  const int N,
+                  int N,
                   double* A,
-                  const int lda,
-                  const int* ipiv) {
+                  int lda,
+                  int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_dgetri(order, N, A, lda, ipiv);
 #else
-  return LAPACKE_dgetri(order, N, A, lda, ipiv);
+  int i;
+  int lwork = N * N;
+  double *work = new double[lwork];
+  int res = dgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
+  delete[] work;
+  return res;
 #endif
 }
 

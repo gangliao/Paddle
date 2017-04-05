@@ -32,7 +32,6 @@ ExternalProject_Add(
     clapack
     ${EXTERNAL_PROJECT_LOG_ARGS}
     GIT_REPOSITORY  "https://github.com/Xreki/clapack.git"
-#    GIT_TAG         3.2.1
     PREFIX          ${CLAPACK_SOURCES_DIR}
     UPDATE_COMMAND  ""
     INSTALL_COMMAND ""
