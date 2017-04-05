@@ -20,6 +20,33 @@ limitations under the License. */
 
 namespace paddle {
 
+// FORTRAN <=> C convertor macros
+#define FORTRAN_DOUBLE_ORDER(m, n, a) {\
+    double* b = new double[m * n];\
+    for (int i = 0; i < m; i++)\
+        for (int j = 0; j < n; j++)\
+            b[(i * n + j) % m * m + (i * n + j) / m] = a[i * n + j];\
+    memmove(a, b, m * n * sizeof(double));\
+    delete[] b; \
+  }
+
+#define FORTRAN_SINGLE_ORDER(m, n, a) {\
+    float* b = new float[m * n];\
+    for (int i = 0; i < m; i++)\
+        for (int j = 0; j < n; j++)\
+            b[(i * n + j) % m * m + (i * n + j) / m] = a[i * n + j];\
+    memmove(a, b, m * n * sizeof(float));\
+    delete[] b;\
+  }
+
+#define IPIV_FORTRAN(n, ipiv)\
+    for (int i = 0; i < n; i++)\
+        ipiv[i] = ipiv[i] + 1;
+
+#define IPIV_C(n, ipiv)\
+    for (int i = 0; i < n; i++)\
+        ipiv[i] = ipiv[i] - 1;
+
 template <>
 void gemm<float>(const CBLAS_TRANSPOSE transA,
                  const CBLAS_TRANSPOSE transB,
@@ -93,10 +120,10 @@ int getrf<float>(const CBLAS_ORDER order,
   int i;
   FORTRAN_SINGLE_ORDER(M, N, A);
   IPIV_FORTRAN(lda, ipiv);
-  int res = sgetrf_(&M, &N, A, &lda, ipiv, &i);
+  sgetrf_(&M, &N, A, &lda, ipiv, &i);
   IPIV_C(lda, ipiv);
   FORTRAN_SINGLE_ORDER(M, N, A);
-  return res;
+  return 0;
 #endif
 }
 
@@ -113,10 +140,10 @@ int getrf<double>(const CBLAS_ORDER order,
   int i;
   FORTRAN_DOUBLE_ORDER(M, N, A);
   IPIV_FORTRAN(lda, ipiv);
-  int res = dgetrf_(&M, &N, A, &lda, ipiv, &i);
+  dgetrf_(&M, &N, A, &lda, ipiv, &i);
   IPIV_C(lda, ipiv);
   FORTRAN_DOUBLE_ORDER(M, N, A);
-  return res;
+  return 0;
 #endif
 }
 
@@ -132,9 +159,9 @@ int getri<float>(const CBLAS_ORDER order,
   int i;
   int lwork = N * N;
   float *work = new float[lwork];
-  int res = sgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
+  sgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
   delete[] work;
-  return res;
+  return 0;
 #endif
 }
 
@@ -150,9 +177,9 @@ int getri<double>(const CBLAS_ORDER order,
   int i;
   int lwork = N * N;
   double *work = new double[lwork];
-  int res = dgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
+  dgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
   delete[] work;
-  return res;
+  return 0;
 #endif
 }
 
