@@ -30,24 +30,21 @@ INCLUDE_DIRECTORIES(${CLAPACK_INCLUDE_DIR})
 ExternalProject_Add(
     clapack
     ${EXTERNAL_PROJECT_LOG_ARGS}
-    GIT_REPOSITORY  "https://github.com/Xreki/clapack.git"
+    GIT_REPOSITORY  "https://github.com/gangliao/clapack-1.git"
     PREFIX          ${CLAPACK_SOURCES_DIR}
     UPDATE_COMMAND  ""
     INSTALL_COMMAND ""
     CMAKE_ARGS      -DCMAKE_INSTALL_PREFIX=${CLAPACK_INSTALL_DIR}
     CMAKE_ARGS      -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    CMAKE_ARGS      -DBUILD_SINGLE=OFF
-    CMAKE_ARGS      -DBUILD_COMPLEX=OFF
-    CMAKE_ARGS      -DBUILD_COMPLEX16=OFF
     CMAKE_ARGS      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
     CMAKE_ARGS      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 )
 
 ExternalProject_Add_Step(
     clapack clapack_install
-    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/INCLUDE/blaswrap.h" "${CLAPACK_INCLUDE_DIR}/blaswrap.h"
-    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/INCLUDE/clapack.h" "${CLAPACK_INCLUDE_DIR}/clapack.h"
-    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/INCLUDE/f2c.h" "${CLAPACK_INCLUDE_DIR}/f2c.h"                
+    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/clapack/INCLUDE/blaswrap.h" "${CLAPACK_INCLUDE_DIR}/blaswrap.h"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/clapack/INCLUDE/clapack.h" "${CLAPACK_INCLUDE_DIR}/clapack.h"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/clapack/INCLUDE/f2c.h" "${CLAPACK_INCLUDE_DIR}/f2c.h"                
     COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/BLAS/WRAP/libcblaswr.a" "${CLAPACK_LIBS_DIR}/libcblaswr.a"
     COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/F2CLIBS/libf2c/libf2c.a" "${CLAPACK_LIBS_DIR}/libf2c.a"
     COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/SRC/liblapack.a" "${CLAPACK_LIBS_DIR}/liblapack.a"

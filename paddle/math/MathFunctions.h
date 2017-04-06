@@ -28,9 +28,10 @@ extern "C" {
 }
 #else
 extern "C" {
-#include "blaswrap.h"
-#include "f2c.h"
-#include "clapack.h"
+int dgetrf_(int*, int*, double*, int*, int*, int*);
+int sgetrf_(int*, int*, float*, int*, int*, int*);
+int dgetri_(int*, int*, double*, int*, int*, double*, int*, int*);
+int sgetri_(int*, int*, float*, int*, int*, float*, int*, int*);
 }
 #endif
 #endif
