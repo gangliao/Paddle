@@ -21,7 +21,7 @@ SET(CLAPACK_INCLUDE_DIR "${CLAPACK_INSTALL_DIR}/include" CACHE PATH "clapack inc
 
 SET(CLAPACK_LIBS_DIR "${CLAPACK_INSTALL_DIR}/lib")
 SET(CLAPACK_LIBRARIES
-    ${CLAPACK_LIBS_DIR}/liblapack.a
+    ${CLAPACK_LIBS_DIR}/libclapack.a
     ${CLAPACK_LIBS_DIR}/libcblaswr.a
     CACHE FILEPATH "CLAPACK_LIBRARIES" FORCE)
 
@@ -47,7 +47,7 @@ ExternalProject_Add_Step(
     COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack/clapack/INCLUDE/f2c.h" "${CLAPACK_INCLUDE_DIR}/f2c.h"                
     COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/clapack/BLAS/WRAP/libcblaswr.a" "${CLAPACK_LIBS_DIR}/libcblaswr.a"
     COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/clapack/F2CLIBS/libf2c.a" "${CLAPACK_LIBS_DIR}/libf2c.a"
-    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/clapack/SRC/liblapack.a" "${CLAPACK_LIBS_DIR}/liblapack.a"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CLAPACK_SOURCES_DIR}/src/clapack-build/clapack/SRC/libclapack.a" "${CLAPACK_LIBS_DIR}/libclapack.a"
     DEPENDEES install
 )
 
