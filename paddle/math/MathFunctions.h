@@ -27,11 +27,14 @@ extern "C" {
 #include <clapack.h>
 }
 #else
-#include <lapacke.h>
+extern "C" {
+int dgetrf_(int*, int*, double*, int*, int*, int*);
+int sgetrf_(int*, int*, float*, int*, int*, int*);
+int dgetri_(int*, double*, int*, int*, double*, int*, int*);
+int sgetri_(int*, float*, int*, int*, float*, int*, int*);
+}
 #endif
 #endif
-
-#include <cmath>
 
 namespace paddle {
 
@@ -52,15 +55,15 @@ void gemm(const CBLAS_TRANSPOSE transA,
 
 template <class T>
 int getrf(const CBLAS_ORDER Order,
-          const int M,
-          const int N,
+          int M,
+          int N,
           T* A,
-          const int lda,
+          int lda,
           int* ipiv);
 
 template <class T>
 int getri(
-    const CBLAS_ORDER Order, const int N, T* A, const int lda, const int* ipiv);
+    const CBLAS_ORDER Order, int N, T* A, int lda, int* ipiv);
 
 template <class T>
 void axpy(const int n, const T alpha, const T* x, T* y);

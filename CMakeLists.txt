@@ -61,6 +61,7 @@ include(external/glog)      # download, build, install glog
 include(external/gtest)     # download, build, install gtest
 include(external/protobuf)  # download, build, install protobuf
 include(external/python)    # download, build, install python
+include(external/clapack)   # download, build, install clapack
 include(external/openblas)  # download, build, install openblas
 include(external/swig)      # download, build, install swig
 include(external/warpctc)   # download, build, install warpctc
@@ -88,6 +89,7 @@ set(EXTERNAL_LIBS
     ${PROTOBUF_LIBRARY}
     ${ZLIB_LIBRARIES}
     ${PYTHON_LIBRARIES}
+    ${CLAPACK_LIBRARIES}
 )
 
 if(WITH_GPU)

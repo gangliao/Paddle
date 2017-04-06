@@ -16,7 +16,36 @@ limitations under the License. */
 #include "hl_matrix_apply.cuh"
 #include "hl_matrix_ops.cuh"
 
+#include <cmath>
+
 namespace paddle {
+
+// FORTRAN <=> C convertor macros
+#define FORTRAN_DOUBLE_ORDER(m, n, a) {\
+    double* b = new double[m * n];\
+    for (int i = 0; i < m; i++)\
+        for (int j = 0; j < n; j++)\
+            b[(i * n + j) % m * m + (i * n + j) / m] = a[i * n + j];\
+    memmove(a, b, m * n * sizeof(double));\
+    delete[] b; \
+  }
+
+#define FORTRAN_SINGLE_ORDER(m, n, a) {\
+    float* b = new float[m * n];\
+    for (int i = 0; i < m; i++)\
+        for (int j = 0; j < n; j++)\
+            b[(i * n + j) % m * m + (i * n + j) / m] = a[i * n + j];\
+    memmove(a, b, m * n * sizeof(float));\
+    delete[] b;\
+  }
+
+#define IPIV_FORTRAN(n, ipiv)\
+    for (int i = 0; i < n; i++)\
+        ipiv[i] = ipiv[i] + 1;
+
+#define IPIV_C(n, ipiv)\
+    for (int i = 0; i < n; i++)\
+        ipiv[i] = ipiv[i] - 1;
 
 template <>
 void gemm<float>(const CBLAS_TRANSPOSE transA,
@@ -80,55 +109,77 @@ void gemm<double>(const CBLAS_TRANSPOSE transA,
 
 template <>
 int getrf<float>(const CBLAS_ORDER order,
-                 const int M,
-                 const int N,
+                 int M,
+                 int N,
                  float* A,
-                 const int lda,
+                 int lda,
                  int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_sgetrf(order, M, N, A, lda, ipiv);
 #else
-  return LAPACKE_sgetrf(order, M, N, A, lda, ipiv);
+  int i;
+  FORTRAN_SINGLE_ORDER(M, N, A);
+  IPIV_FORTRAN(lda, ipiv);
+  sgetrf_(&M, &N, A, &lda, ipiv, &i);
+  IPIV_C(lda, ipiv);
+  FORTRAN_SINGLE_ORDER(M, N, A);
+  return 0;
 #endif
 }
 
 template <>
 int getrf<double>(const CBLAS_ORDER order,
-                  const int M,
-                  const int N,
+                  int M,
+                  int N,
                   double* A,
-                  const int lda,
+                  int lda,
                   int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_dgetrf(order, M, N, A, lda, ipiv);
 #else
-  return LAPACKE_dgetrf(order, M, N, A, lda, ipiv);
+  int i;
+  FORTRAN_DOUBLE_ORDER(M, N, A);
+  IPIV_FORTRAN(lda, ipiv);
+  dgetrf_(&M, &N, A, &lda, ipiv, &i);
+  IPIV_C(lda, ipiv);
+  FORTRAN_DOUBLE_ORDER(M, N, A);
+  return 0;
 #endif
 }
 
 template <>
 int getri<float>(const CBLAS_ORDER order,
-                 const int N,
+                 int N,
                  float* A,
-                 const int lda,
-                 const int* ipiv) {
+                 int lda,
+                 int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_sgetri(order, N, A, lda, ipiv);
 #else
-  return LAPACKE_sgetri(order, N, A, lda, ipiv);
+  int i;
+  int lwork = N * N;
+  float *work = new float[lwork];
+  sgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
+  delete[] work;
+  return 0;
 #endif
 }
 
 template <>
 int getri<double>(const CBLAS_ORDER order,
-                  const int N,
+                  int N,
                   double* A,
-                  const int lda,
-                  const int* ipiv) {
+                  int lda,
+                  int* ipiv) {
 #ifdef PADDLE_USE_ATLAS
   return clapack_dgetri(order, N, A, lda, ipiv);
 #else
-  return LAPACKE_dgetri(order, N, A, lda, ipiv);
+  int i;
+  int lwork = N * N;
+  double *work = new double[lwork];
+  dgetri_(&N, A, &lda, ipiv, work, &lwork, &i);
+  delete[] work;
+  return 0;
 #endif
 }
 
