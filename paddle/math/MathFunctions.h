@@ -30,8 +30,8 @@ extern "C" {
 extern "C" {
 int dgetrf_(int*, int*, double*, int*, int*, int*);
 int sgetrf_(int*, int*, float*, int*, int*, int*);
-int dgetri_(int*, int*, double*, int*, int*, double*, int*, int*);
-int sgetri_(int*, int*, float*, int*, int*, float*, int*, int*);
+int dgetri_(int*, double*, int*, int*, double*, int*, int*);
+int sgetri_(int*, float*, int*, int*, float*, int*, int*);
 }
 #endif
 #endif
