@@ -2,10 +2,79 @@
 
 ## New Features
 
+* We release [new python API](http://research.baidu.com/paddlepaddles-new-api-simplifies-deep-learning-programs/).
+  * Add dataset package
+    - CIFAR, MNIST, IMDB, WMT14, CONLL05, movielens, imikolov.
+  * A New Conceptual Model for neural network.
+  * Compositional Data Bricks.
+* Deep Learning 101 book in [English](http://book.paddlepaddle.org/index.en.html) and [Chinese](http://book.paddlepaddle.org/).
+* Support rectangle input for CNN.
+* Support stride pooling for seqlastin and seqfirstin.
+* Expose seq_concat_layer/seq_reshape_layer in `trainer_config_helpers`.
+* Expose `getLayerOutput` in multigradient machine via SWIG.
+
+* Add Priorbox layer for Single Shot Multibox Detection.
+* Add smooth L1 cost.
+* Add data reader creator and data reader decorator for v2 API.
+* Add the cpu implementation of cmrnorm-projection.
+
 ## Improvements
+
+* Add [CMake external project](https://github.com/PaddlePaddle/Paddle/tree/develop/cmake/external) to download, build, install third-party dependencies.
+  - Gflags, Gtest, Protobuf, openblas, any, warpctc, zlib
+* Add CMake SWIG modules to generate python wrapper.
+* Support python virtualenv for `paddle_trainer` process.
+* Add pre-commit hooks, used for automatically format our code.
+* Use Protobuf 3.X as the default Paddle Protobuf version.
+* Add an option to check data type in python data provider.
+* Speedup the backward of average layer on GPU.
+* Reorganize the catalog of doc/ and refine several docs.
+* Add Travis-CI for checking dead links.
+* Add a example for explaining sparse_vector.
+* Add Relu in layer_math.py
+* Simplify data processing flow for quick start.
+* Support CUDNN Deconv.
+* Add data feeder for v2 API.
+* Support predicting the samples from sys.stdin for sentiment demo.
+* Provide multi-proccess interface for image preprocessing. 
+* Add benchmark document for v1 API.
+* Add Relu in layer_math.py.
+* Add packages for automatically downloading public datasets.
+* Rename Argument::sumCost to Argument::sum since Argument does not have to have any relationship with cost.
+  * Expose Argument::sum to Python
+* Add a new `TensorExpression` implementation for matrix-related expression evaluations.
+* Add Lazy Assignment for optimize the calculation of multiple expressions.
+* Add `Function` to reconstruct the computation function.
+  * PadFunc and PadGradFunc.
+  * ContextProjectionForwardFunc and ContextProjectionBackwardFunc.
+  * CosSimBackward and CosSimBackwardFunc.
+  * CrossMapNormalFunc and CrossMapNormalGradFunc.
+  * MulFunc.
+* Add `AutoCompare` and `FunctionCompare`, which make it easier to write unittest for comparing gpu and cpu version of a function.
+* Add `libpaddle_test_main.a` and remove the main function inside the test file.
+* Support dense numpy vector in PyDataProvider2.
+* Clean code base, remove some copy & paste codes before.
+  * Extract RowBuffer class for SparseRowMatrix.
+  * Clean GradientMachine's interface.
+  * Try use `override` keyword in layer.
+  * Simplify Evaluator::create, use `ClassRegister` to create Evaluator.
+* Add md5 check when downloading demo's dataset.
+* Add `paddle::Error` which intentially replace `LOG(FATAL)` in Paddle.
 
 ## Bug Fixes
 
+* Add layer check for recurrent_group.
+* Clang-format off on some cuda .cc files.
+* Fix LogActivation which is not defined.
+* Fix bug when run test_layerHelpers multiple times.
+* Fix protobuf size limit on seq2seq demo.
+* Fix bug for dataprovider converter in GPU mode.
+* Fix bug in GatedRecurrentLayer which only occurs in predicting or `job=test` mode.
+* Fix bug for BatchNorm when testing more than models in test mode.
+* Fix unit test of paramRelu.
+* Fix some warning about CpuSparseMatrix.
+* Fix MultiGradientMachine error if trainer_count > batch_size.
+* Fix when async load data in PyDataProvider2.
 
 # Release v0.9.0
 
