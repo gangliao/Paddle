@@ -105,13 +105,7 @@ fi
 
 cat >> /paddle/build/Dockerfile <<EOF
 # Use different deb file when building different type of images
-<<<<<<< HEAD
-ADD *.deb /usr/local/opt/paddle/deb/
-||||||| merged common ancestors
-ADD build/*.deb /usr/local/opt/paddle/deb/
-=======
 ADD *.deb /
->>>>>>> 5a5e3c192610687d6242a6b496c1369652b3192a
 # run paddle version to install python packages first
 RUN apt-get update &&\
     apt-get install -y python-pip && pip install -U pip && \
