@@ -6,7 +6,7 @@
   * Add dataset package
     - CIFAR, MNIST, IMDB, WMT14, CONLL05, movielens, imikolov.
   * A New Conceptual Model for neural network.
-  * Compositional Data Bricks
+  * Compositional Data Bricks.
 * Deep Learning 101 book in [English](http://book.paddlepaddle.org/index.en.html) and [Chinese](http://book.paddlepaddle.org/).
 * Support rectangle input for CNN.
 * Support stride pooling for seqlastin and seqfirstin.
