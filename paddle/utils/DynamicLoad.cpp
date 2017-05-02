@@ -170,3 +170,4 @@ void GetLapackDsoHandle(void** dso_handle) {
   GetDsoHandleFromSearchPath(FLAGS_warpctc_dir, "liblapack.so", dso_handle);
 #endif
 }
+
